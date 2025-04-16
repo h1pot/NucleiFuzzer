@@ -198,7 +198,7 @@ elif [ -n "$FILENAME" ]; then
     RAW_FILE="$OUTPUT_FOLDER/all_raw.txt"
     VALIDATED_FILE="$OUTPUT_FOLDER/all_validated.txt"
     : > "$RAW_FILE" # Clear raw file
-    while IFS= read -r line; do
+    while IFS= read -r line || [ -n "$line" ]; do
         ((COUNT++))
         echo -e "${YELLOW}[Progress]${RESET} Processing $COUNT/$TOTAL_LINES: $line"
         collect_urls "$line" "$RAW_FILE"
