@@ -20,8 +20,15 @@ EOF
 echo -e "${RESET}"
 
 # Default settings
-OUTPUT_FOLDER="./output"
-HOME_DIR=$(eval echo ~"$USER")
+OUTPUT_FOLDER="${OUTPUT_FOLDER:-$(pwd)/output}"
+
+# Create output directory if it doesn't exist
+mkdir -p "$OUTPUT_FOLDER" || {
+  echo -e "${RED}[ERROR]${RESET} Failed to create output directory: $OUTPUT_FOLDER"
+  exit 1
+}
+#HOME_DIR=$(eval echo ~"$USER")
+HOME_DIR="$HOME"
 EXCLUDED_EXTENSIONS="png,jpg,gif,jpeg,swf,woff,svg,pdf,json,css,js,webp,woff,woff2,eot,ttf,otf,mp4,txt"
 LOG_FILE="$OUTPUT_FOLDER/nucleifuzzer.log"
 VERBOSE=false
@@ -114,7 +121,7 @@ TEMPLATE_DIR=${TEMPLATE_DIR:-"$HOME_DIR/nuclei-templates"}
 # Install dependencies
 check_prerequisite "nuclei" "go install -v github.com/projectdiscovery/nuclei/v3/cmd/nuclei@latest"
 check_prerequisite "httpx" "go install -v github.com/projectdiscovery/httpx/cmd/httpx@latest"
-check_prerequisite "uro" "pipx install uro"
+check_prerequisite "uro" "pip3 install uro"
 check_prerequisite "katana" "go install -v github.com/projectdiscovery/katana/cmd/katana@latest"
 check_prerequisite "waybackurls" "go install github.com/tomnomnom/waybackurls@latest"
 check_prerequisite "gauplus" "go install github.com/bp0lr/gauplus@latest"
