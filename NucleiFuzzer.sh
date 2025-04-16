@@ -177,7 +177,7 @@ run_nuclei() {
     local url_file="$1"
     echo -e "${GREEN}Running Nuclei on URLs from $url_file...${RESET}"
     httpx -silent -mc 200,204,301,302,401,403,405,500,502,503,504 -l "$url_file" \
-        | nuclei -t "$TEMPLATE_DIR" -severity low,medium,high,critical -tags cve,security-misconfiguration,fuzz,xss,sqli,rce,exposure,token,misconfig,ssrf,idor,auth -etags dos,brute -rate-limit "$RATE_LIMIT" -c 20 -retries 3 -j -irr -nc -v -headless -no-stdin -bs 100 -timeout 10 -o "$OUTPUT_FOLDER/nuclei_results.txt" -es info -stats -si 60
+        | nuclei -t "$TEMPLATE_DIR" -dast -severity low,medium,high,critical -tags cve,security-misconfiguration,fuzz,xss,sqli,rce,exposure,token,misconfig,ssrf,idor,auth -etags dos,brute -rate-limit "$RATE_LIMIT" -c 20 -retries 3 -j -irr -nc -headless -no-stdin -bs 100 -timeout 15 -o "$OUTPUT_FOLDER/nuclei_results.txt" -es info -stats -si 60
 }
 
 # Main logic
