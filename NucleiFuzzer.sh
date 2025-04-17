@@ -188,7 +188,7 @@ run_nuclei() {
   -l "$url_file" \
   -o "$OUTPUT_FOLDER/httpx_live.txt"
 
-    nuclei -l "$OUTPUT_FOLDER/httpx_live.txt" -im list \
+    nuclei -l "$OUTPUT_FOLDER/httpx_live.txt" \
       -dast \
       -t /home/lynx/.local/nuclei-templates/ \
       -severity low,medium,high,critical \
