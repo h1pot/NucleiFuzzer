@@ -61,6 +61,23 @@ log() {
     fi
 }
 
+# Check prerequisites
+check_prerequisite() {
+    local tool="$1"
+    local install_command="$2"
+    if ! command -v "$tool" &> /dev/null; then
+        log "INFO" "Installing $tool..."
+        if ! eval "$install_command"; then
+            log "ERROR" "Failed to install $tool. Exiting."
+            exit 1
+        fi
+        # Ensure uro is in PATH
+        if [ "$tool" = "uro" ] && [ -f "$HOME/.local/bin/uro" ]; then
+            log "INFO" "Adding $HOME/.local/bin to PATH for uro."
+            export PATH="$HOME/.local/bin:$PATH"
+        fi
+    fi
+}
 
 # Clone repositories
 clone_repo() {
@@ -102,6 +119,13 @@ mkdir -p "$OUTPUT_FOLDER"
 TEMPLATE_DIR=${TEMPLATE_DIR:-"$HOME_DIR/nuclei-templates"}
 
 # Install dependencies
+check_prerequisite "nuclei" "go install -v github.com/projectdiscovery/nuclei/v3/cmd/nuclei@latest"
+check_prerequisite "httpx" "go install -v github.com/projectdiscovery/httpx/cmd/httpx@latest"
+check_prerequisite "uro" "pip3 install uro"
+check_prerequisite "katana" "go install -v github.com/projectdiscovery/katana/cmd/katana@latest"
+check_prerequisite "waybackurls" "go install github.com/tomnomnom/waybackurls@latest"
+check_prerequisite "gauplus" "go install github.com/bp0lr/gauplus@latest"
+check_prerequisite "hakrawler" "go install github.com/hakluke/hakrawler@latest"
 clone_repo "https://github.com/0xKayala/ParamSpider" "$HOME_DIR/ParamSpider"
 clone_repo "https://github.com/projectdiscovery/nuclei-templates.git" "$HOME_DIR/nuclei-templates"
 
@@ -166,7 +190,7 @@ run_nuclei() {
 
     nuclei -l "$OUTPUT_FOLDER/httpx_live.txt" \
       -dast \
-      -t /home/lynx/.local/nuclei-templates/ \
+      -t "$TEMPLATE_DIR" \
       -severity low,medium,high,critical \
       -tags cve,security-misconfiguration,fuzz,xss,sqli,rce,exposure,token,misconfig,ssrf,idor,auth \
       -etags dos,brute \
@@ -205,7 +229,7 @@ elif [ -n "$FILENAME" ]; then
     RAW_FILE="$OUTPUT_FOLDER/all_raw.txt"
     VALIDATED_FILE="$OUTPUT_FOLDER/all_validated.txt"
     : > "$RAW_FILE" # Clear raw file
-    while IFS= read -r line || [ -n "$line" ]; do
+    while IFS= read -r line; do
         ((COUNT++))
         echo -e "${YELLOW}[Progress]${RESET} Processing $COUNT/$TOTAL_LINES: $line"
         collect_urls "$line" "$RAW_FILE"
