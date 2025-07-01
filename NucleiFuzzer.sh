@@ -1,5 +1,10 @@
 #!/bin/bash
 
+# Add Go bin to PATH if it exists
+if [ -d "$HOME/go/bin" ]; then
+    export PATH="$PATH:$HOME/go/bin"
+fi
+
 # ANSI color codes
 RED='\033[91m'
 GREEN='\033[92m'
@@ -121,7 +126,7 @@ TEMPLATE_DIR=${TEMPLATE_DIR:-"$HOME_DIR/nuclei-templates"}
 # Install dependencies
 check_prerequisite "nuclei" "go install -v github.com/projectdiscovery/nuclei/v3/cmd/nuclei@latest"
 check_prerequisite "httpx" "go install -v github.com/projectdiscovery/httpx/cmd/httpx@latest"
-check_prerequisite "uro" "pip3 install uro"
+check_prerequisite "uro" "pipx install uro"
 check_prerequisite "katana" "go install -v github.com/projectdiscovery/katana/cmd/katana@latest"
 check_prerequisite "waybackurls" "go install github.com/tomnomnom/waybackurls@latest"
 check_prerequisite "gauplus" "go install github.com/bp0lr/gauplus@latest"
