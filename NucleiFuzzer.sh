@@ -126,7 +126,7 @@ TEMPLATE_DIR=${TEMPLATE_DIR:-"$HOME_DIR/nuclei-templates"}
 # Install dependencies
 check_prerequisite "nuclei" "go install -v github.com/projectdiscovery/nuclei/v3/cmd/nuclei@latest"
 check_prerequisite "httpx" "go install -v github.com/projectdiscovery/httpx/cmd/httpx@latest"
-check_prerequisite "uro" "pipx install uro"
+check_prerequisite "uro" "pipx install uro" # --force
 check_prerequisite "katana" "go install -v github.com/projectdiscovery/katana/cmd/katana@latest"
 check_prerequisite "waybackurls" "go install github.com/tomnomnom/waybackurls@latest"
 check_prerequisite "gauplus" "go install github.com/bp0lr/gauplus@latest"
